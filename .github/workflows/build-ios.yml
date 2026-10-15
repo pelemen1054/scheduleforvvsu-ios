@@ -86,7 +86,7 @@ jobs:
           {
             echo "# ВВГУ timetable iOS v${{ steps.version.outputs.version }}"
             echo
-            awk '/^## \\[1.0.4\\]/{show=1} show{print}' CHANGELOG.md
+            cat CHANGELOG.md
             echo
             echo "## Полный журнал коммитов"
             echo
