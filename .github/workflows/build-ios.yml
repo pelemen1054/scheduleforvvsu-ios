@@ -79,6 +79,33 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Generate release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          PREVIOUS_TAG="$(git tag --list 'v*' --sort=-version:refname | grep -vx "$GITHUB_REF_NAME" | head -n 1 || true)"
+          {
+            echo "# ВВГУ timetable iOS v${{ steps.version.outputs.version }}"
+            echo
+            awk '/^## \\[1.0.4\\]/{show=1} show{print}' CHANGELOG.md
+            echo
+            echo "## Полный журнал коммитов"
+            echo
+            if [ -n "$PREVIOUS_TAG" ]; then
+              echo "Изменения с релиза `$PREVIOUS_TAG`:"
+              echo
+              git log --no-merges --pretty=format:'- %s (`%h`)' "$PREVIOUS_TAG..$GITHUB_SHA"
+            else
+              echo "Изменения с начала истории проекта:"
+              echo
+              git log --no-merges --pretty=format:'- %s (`%h`)' "$GITHUB_SHA"
+            fi
+            echo
+            echo
+            echo "---"
+            echo
+            echo "**Важно:** приложенный ZIP содержит сборку для iOS Simulator и не устанавливается на обычный iPhone. Это не IPA."
+          } > RELEASE_NOTES.md
+
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
@@ -86,7 +113,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ВВГУ timetable iOS v${{ steps.version.outputs.version }}
           target_commitish: ${{ github.sha }}
-          body_path: CHANGELOG.md
+          body_path: RELEASE_NOTES.md
           files: VVSUTimetable-iOS-Simulator.zip
           overwrite_files: true
           make_latest: true
