@@ -1,0 +1,22 @@
+name: VVSUTimetable
+options:
+  bundleIdPrefix: ru.vvsu
+  deploymentTarget:
+    iOS: "17.0"
+targets:
+  VVSUTimetable:
+    type: application
+    platform: iOS
+    sources:
+      - path: VVSUTimetable
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ru.vvsu.timetable.ios
+        PRODUCT_NAME: "ВВГУ timetable"
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: "ВВГУ timetable"
+        INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.education"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        CODE_SIGN_STYLE: Automatic
